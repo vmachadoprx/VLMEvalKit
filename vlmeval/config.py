@@ -315,6 +315,10 @@ api_models = {
         retry=10,
         verbose=False,
     ),
+    "Cohere_Vision_Staging": partial(
+        Cohere_Vision_Wrapper,
+        temperature=0,
+    ),
     "Claude3V_Haiku": partial(
         Claude3V,
         model="claude-3-haiku-20240307",
