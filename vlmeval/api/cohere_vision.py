@@ -4,12 +4,26 @@ from time import sleep
 import base64
 import mimetypes
 from PIL import Image
+from typing import Optional
 
 
 official_url = "https://stg.api.cohere.ai/v2/chat"
 STG_API_KEY = ''
 
+COHERE_COT_MMMU_DEFAULT = """Analyze the image and question carefully, using step-by-step reasoning.
+First, describe any image provided in detail. Then, present your reasoning. Last, and most important, your answer should always end in this format:
+Final Answer: <answer>
+where <answer> is:
+- The single correct letter choice A, B, C, D, E, F, etc. when options are provided. Only include the letter.
+- Your direct answer if no options are given, as a single phrase or number.
+- If your answer is a number, only include the number without any unit.
+- If your answer is a word or phrase, do not paraphrase or reformat the text you see in the image.
+- You cannot answer that the question is unanswerable. You must either pick an option or provide a direct answer.
+IMPORTANT: Remember, to end your answer with Final Answer: <answer>."""
 
+prompts = {
+    "cohere-cot": COHERE_COT_MMMU_DEFAULT,
+}
 class Cohere_Vision_Wrapper(BaseAPI):
 
     is_api: bool = True
@@ -20,7 +34,7 @@ class Cohere_Vision_Wrapper(BaseAPI):
                  retry: int = 10,
                  timeout: int = 60,
                  wait: int = 3,
-                 system_prompt: str = None,
+                 system_prompt: Optional[str] = prompts["cohere-cot"],
                  verbose: bool = True,
                  temperature: float = 0,
                  max_tokens: int = 2048,
@@ -32,7 +46,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
         self.max_tokens = max_tokens
 
         self.timeout = timeout
-
+        self.system_prompt = prompts["cohere-cot"]
+                
+                
         self.key = STG_API_KEY if STG_API_KEY else os.environ.get('COHERE_API_KEY', '')
         self.headers = {
             "Content-Type": "application/json",
@@ -82,6 +98,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
         input_msgs = []
         assert isinstance(inputs, list) and isinstance(inputs[0], dict)
         assert np.all(['type' in x for x in inputs]) or np.all(['role' in x for x in inputs]), inputs
+        if self.system_prompt is not None:
+            input_msgs.append(dict(role="system", content=[dict(type='text', text=self.system_prompt)]))
+            print(f"Using system prompt: {self.system_prompt}")
         if 'role' in inputs[0]:
             assert inputs[-1]['role'] == 'user', inputs[-1]
             for item in inputs:
@@ -95,10 +114,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
             'model': self.model,
             'max_tokens': self.max_tokens,
             'messages': self.prepare_inputs(inputs),
-            #**kwargs
+            'temperature': self.temperature,
+            'seed': 42,  # For reproducibility
         }
-        if self.system_prompt is not None:
-            payload['system'] = self.system_prompt
 
         response = requests.request(
             'POST', self.url, headers=self.headers, json=payload, timeout=self.timeout * 1.1
@@ -111,11 +129,6 @@ class Cohere_Vision_Wrapper(BaseAPI):
         try:
             (turn,) = response.json()["message"]["content"]
             answer = turn["text"].strip()
-            # resp_struct = json.loads(response.text)
-            # if self.backend == 'alles':
-            #     answer = resp_struct['data']['content'][0]['text'].strip()
-            # elif self.backend == 'official':
-            #     answer = resp_struct['content'][0]['text'].strip()
         except Exception as err:
             if self.verbose:
                 self.logger.error(f'{type(err)}: {err}')
