@@ -240,22 +240,20 @@ class ImageMCQDataset(ImageBaseDataset):
 
         suffix = eval_file.split('.')[-1]
         model = judge_kwargs.get('model', 'exact_matching')
+        model = "gpt-4-0125"
         assert model in ['chatgpt-0125', 'exact_matching', 'gpt-4-0125']
         name_str_map = {'chatgpt-0125': 'openai', 'gpt-4-0125': 'gpt4'}
         name_str = name_str_map[model] if model in name_str_map else model
-
-        if model == 'exact_matching':
+        #import random
+        name_str = "444"
+        model = build_judge(**judge_kwargs)
+        if not model.working():
+            warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
+            warnings.warn(DEBUG_MESSAGE)
+            
             model = None
-        elif gpt_key_set():
-            model = build_judge(**judge_kwargs)
-            if not model.working():
-                warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
-                warnings.warn(DEBUG_MESSAGE)
-                model = None
         else:
-            warnings.warn('OPENAI_API_KEY is not set properly, will use exact matching for evaluation')
-            model = None
-
+            print("Extractor Model is working")
         result_file = eval_file.replace(f'.{suffix}', f'_{name_str}_result.pkl')
 
         data = load(eval_file)

@@ -97,7 +97,7 @@ def encode_image_to_base64(img, target_size=-1, fmt='JPEG'):
     if target_size > 0:
         img.thumbnail((target_size, target_size))
     img_buffer = io.BytesIO()
-    img.save(img_buffer, format=fmt)
+    img.save(img_buffer, format=fmt, quality=95, optimize=True)
     image_data = img_buffer.getvalue()
     ret = base64.b64encode(image_data).decode('utf-8')
     return ret

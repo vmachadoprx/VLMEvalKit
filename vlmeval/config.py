@@ -295,7 +295,17 @@ api_models = {
         retry=10,
         img_size=-1,
         img_detail="high",
-    ),
+    ), #0.0.0.0
+    "VLLM_Endpoint": partial(
+        GPT4V,
+        model="victor-qwen2_5-72b-eval",
+        api_base="http://localhost:8091/v1/chat/completions",
+        temperature=0,
+        retry=10,
+        img_size=-1,
+        img_detail="high",
+        key="sk-xx",
+    ), #0.0.0.0
     # Yi-Vision
     "Yi-Vision": partial(
         GPT4V,
@@ -314,30 +324,48 @@ api_models = {
         temperature=0,
         retry=10,
         verbose=False,
-    ),
-    "Cohere_Vision_Staging_eps": partial(
+    ), # command-vision-6eoog65n-w4a16-awq
+    "Cohere_Command_Vision_Staging_w4a16": partial(
         Cohere_Vision_Wrapper,
-        model="c3-sweep-6eoog65n-e0ry-fp16",
-        temperature=0.3,
-        max_tokens=4096, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
-    ),
-    "Cohere_Vision_Staging_375": partial(
-        Cohere_Vision_Wrapper,
-        model="command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375",
-        temperature=0,
+        model="command-vision-6eoog65n-w4a16-awq",
+        system_prompt="thinking",
+        temperature=0.0,
         max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
     ),
-    "Cohere_Vision_Staging_mmpr_beta-03": partial(
+    "Cohere_Command_Vision_Staging": partial(
         Cohere_Vision_Wrapper,
-        model="command-vision-psg-mmpr-lr-5e7-beta-03",
-        temperature=0,
-        max_tokens=4096, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375 # c3-sweep-jhkluuma-mpnc-fp16
+        model="command-a-vision",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
     ),
-    "Cohere_Vision_Staging_jhkl": partial(
+    "Cohere_Command_Vision_Staging_fp16": partial(
         Cohere_Vision_Wrapper,
-        model="c3-sweep-jhkluuma-mpnc-fp16",
-        temperature=0,
-        max_tokens=4096, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375 # c3-sweep-jhkluuma-mpnc-fp16
+        model="command-a-vision-fp16",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+    ),
+    "Cohere_Command_Vision_Staging_fp8": partial(
+        Cohere_Vision_Wrapper,
+        model="command-vision-6eoog65n-fp8-clone",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+    ),
+    "Cohere_Command_Vision_Staging_int8": partial(
+        Cohere_Vision_Wrapper,
+        model="command-vision-6eoog65n-int8-sq",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+    ), # command-vision-6eoog65n-int8-gptq-sq
+    "Cohere_Command_Vision_Staging_int8_gptq": partial(
+        Cohere_Vision_Wrapper,
+        model="command-vision-6eoog65n-int8-gptq-sq",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
     ),
     "Claude3V_Haiku": partial(
         Claude3V,

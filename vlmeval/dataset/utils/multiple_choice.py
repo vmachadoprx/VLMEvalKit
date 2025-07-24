@@ -175,6 +175,32 @@ def report_acc_MMSci(df):
     return full_acc_df
 
 
+def extract_boxed_content(ans: str):
+    idx = ans.rfind(r'\boxed{')
+    if idx == -1:
+        return ans
+
+    idx += len(r'\boxed{')
+    brace_level = 1
+    content_start = idx
+    i = idx
+
+    while i < len(ans):
+        if ans[i] == '{':
+            brace_level += 1
+        elif ans[i] == '}':
+            brace_level -= 1
+            if brace_level == 0:
+                break
+        i += 1
+
+    if brace_level != 0:
+        # Unbalanced braces
+        return ans
+
+    content = ans[content_start:i]
+    return content
+
 def build_prompt(question, options, prediction):
     tmpl = (
         'You are an AI assistant who will help me to match '
@@ -192,6 +218,10 @@ def build_prompt(question, options, prediction):
         'Example 3: \n'
         'Question: {}?\nOptions: {}\nAnswer: {}\nYour output: '
     )
+    #p = extract_boxed_content(prediction)
+    zz= tmpl.format(question, options, prediction)
+    
+    print(zz)
     return tmpl.format(question, options, prediction)
 
 

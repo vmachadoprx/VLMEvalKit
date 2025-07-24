@@ -23,7 +23,7 @@ class Claude_Wrapper(BaseAPI):
     is_api: bool = True
 
     def __init__(self,
-                 backend: str = 'alles',
+                 backend: str = 'official',
                  model: str = 'claude-3-opus-20240229',
                  key: str = None,
                  retry: int = 10,

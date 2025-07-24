@@ -7,9 +7,10 @@ INTERNAL = os.environ.get('INTERNAL', 0)
 def build_judge(**kwargs):
     from ...api import OpenAIWrapper, SiliconFlowAPI, HFChatModel
     model = kwargs.pop('model', None)
+    #model = "gpt-4o-0806"
     kwargs.pop('nproc', None)
     load_env()
-    LOCAL_LLM = os.environ.get('LOCAL_LLM', None)
+    LOCAL_LLM = 'gpt-4o' #os.environ.get('LOCAL_LLM', None)
     if LOCAL_LLM is None:
         model_map = {
             'gpt-4-turbo': 'gpt-4-1106-preview',
@@ -30,6 +31,8 @@ def build_judge(**kwargs):
     else:
         model_version = LOCAL_LLM
 
+    model="openai"
+    model_version = "chatgpt-4o-latest"
     if model in ['qwen-7b', 'qwen-72b', 'deepseek']:
         model = SiliconFlowAPI(model_version, **kwargs)
     elif model == 'llama31-8b':
