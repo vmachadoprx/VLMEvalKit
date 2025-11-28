@@ -7,8 +7,6 @@ from PIL import Image
 from typing import Optional
 import os
 import requests
-# official_url = "https://stg.api.cohere.ai/v2/chat"
-# STG_API_KEY = "izzl1o8oWv7PDS0rdTf4KRm6MTbpLtbgLf1J8H7M"
 
 COHERE_COT_MMMU_DEFAULT = """Analyze the image and question carefully, using step-by-step reasoning.
 First, describe any image provided in detail. Then, present your reasoning. Last, and most important, your answer should always end in this format:
@@ -81,6 +79,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
         system_prompt: Optional[str] = None,
         verbose: bool = True,
         temperature: float = 0,
+        k: int = 0,
+        p: float = 0.95,
+        enable_thinking: bool = True,
         max_tokens: int = 2048,
         **kwargs,
     ):
@@ -88,6 +89,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
         self.url = base_url
         self.model = model
         self.temperature = temperature
+        self.k = k
+        self.p = p
+        self.enable_thinking = enable_thinking
         self.max_tokens = max_tokens
 
         self.timeout = timeout
@@ -336,6 +340,11 @@ class Cohere_Vision_Wrapper(BaseAPI):
             "max_tokens": self.max_tokens,
             "messages": messages,
             "temperature": self.temperature,
+            "k": self.k,
+            "p": self.p,
+            "thinking": {
+                "type": "enabled" if self.enable_thinking else "disabled",
+            },
             "seed": 0,  # For reproducibility
         }
 
@@ -350,8 +359,9 @@ class Cohere_Vision_Wrapper(BaseAPI):
         answer = self.fail_msg
 
         try:
-            (turn,) = response.json()["message"]["content"]
-            answer = turn["text"].strip()
+            turn_content = response.json()["message"]["content"]
+            response = [r for r in turn_content if r["type"] == "text"][0]["text"]
+            answer = response
         except Exception as err:
 
             if self.verbose:

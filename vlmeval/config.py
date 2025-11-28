@@ -296,10 +296,50 @@ api_models = {
         img_size=-1,
         img_detail="high",
     ), #0.0.0.0
-    "VLLM_Endpoint": partial(
+    "InternVL3-78B-vllm": partial(
         GPT4V,
-        model="victor-qwen2_5-72b-eval",
+        model="victor-internvl3-78b-eval",
         api_base="http://localhost:8091/v1/chat/completions",
+        temperature=0,
+        retry=10,
+        img_size=-1,
+        img_detail="high",
+        key="sk-xx",
+    ), #0.0.0.0 victor-glm-4.1v-9b-eval
+    "GLM-4.1V-vllm": partial(
+        GPT4V,
+        model="victor-glm-4.1v-9b-eval",
+        api_base="http://localhost:8091/v1/chat/completions",
+        temperature=0,
+        retry=10,
+        img_size=-1,
+        img_detail="high",
+        key="sk-xx",
+    ), #0.0.0.0 victor-glm-4.1v-9b-eval
+    "Llama4-Maverick-vllm": partial(
+        GPT4V,
+        model="victor-llama-4-maverick-eval",
+        api_base="http://localhost:8088/v1/chat/completions",
+        temperature=0,
+        retry=10,
+        img_size=-1,
+        img_detail="high",
+        key="sk-xx",
+    ), #0.0.0.0 victor-glm-4.1v-9b-eval ## 8098
+    "Pixtral-Large-vllm": partial(
+        GPT4V,
+        model="victor-pixtral-large-eval",
+        api_base="http://localhost:8098/v1/chat/completions",
+        temperature=0,
+        retry=10,
+        img_size=-1,
+        img_detail="high",
+        key="sk-xx",
+    ), #0.0.0.0 victor-glm-4.1v-9b-eval ## 8098
+    "gemma3-27B-vllm": partial(
+        GPT4V,
+        model="victor-gemma3-27b-eval",
+        api_base="http://localhost:8092/v1/chat/completions",
         temperature=0,
         retry=10,
         img_size=-1,
@@ -332,40 +372,64 @@ api_models = {
         temperature=0.0,
         max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
     ),
+    "Cohere_Command_C4_Vision_25a218t_aptbag_Staging": partial(
+        Cohere_Vision_Wrapper,
+        model="c4-25a218t-alxis1125o12-aptbag-1-ca80239a-fp16",
+        system_prompt="thinking",
+        enable_thinking=True,
+        k=0,
+        p=0.95,
+        temperature=0.6,
+        max_tokens=8192,
+    ),
     "Cohere_Command_Vision_Staging": partial(
         Cohere_Vision_Wrapper,
-        model="command-a-vision",
+        model="command-a-vision-07-2025",
         system_prompt="thinking",
         temperature=0.0,
-        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+        max_tokens=8192,
     ),
     "Cohere_Command_Vision_Staging_fp16": partial(
         Cohere_Vision_Wrapper,
-        model="command-a-vision-fp16",
+        model="command-vision-6eoog65n-bf16",
         system_prompt="thinking",
         temperature=0.0,
-        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+        max_tokens=8192,
+    ),
+    "Cohere_Command_Vision_Staging_fp16_cloned": partial(
+        Cohere_Vision_Wrapper,
+        model="command-vision-6eoog65n-bf16-cloned",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192,
     ),
     "Cohere_Command_Vision_Staging_fp8": partial(
         Cohere_Vision_Wrapper,
-        model="command-vision-6eoog65n-fp8-clone",
+        model="command-a-vision-fp8",
         system_prompt="thinking",
         temperature=0.0,
-        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+        max_tokens=8192,
     ),
     "Cohere_Command_Vision_Staging_int8": partial(
         Cohere_Vision_Wrapper,
         model="command-vision-6eoog65n-int8-sq",
         system_prompt="thinking",
         temperature=0.0,
-        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
-    ), # command-vision-6eoog65n-int8-gptq-sq
-    "Cohere_Command_Vision_Staging_int8_gptq": partial(
+        max_tokens=8192,
+    ), 
+    "Cohere_Command_Vision_Staging_jkhl": partial(
         Cohere_Vision_Wrapper,
-        model="command-vision-6eoog65n-int8-gptq-sq",
+        model="c3-sweep-jhkluuma-mpnc-fp16-2",
         system_prompt="thinking",
         temperature=0.0,
-        max_tokens=8192, # command-a-vision-22k-cohort20-mmpsge2mmboost-ca--375
+        max_tokens=8192,
+    ),
+    "Cohere_Command_Vision_Staging_epsilon": partial(
+        Cohere_Vision_Wrapper,
+        model="command-a-vision-epsilon-pprob02-new",
+        system_prompt="thinking",
+        temperature=0.0,
+        max_tokens=8192,
     ),
     "Claude3V_Haiku": partial(
         Claude3V,
